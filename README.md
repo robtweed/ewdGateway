@@ -17,15 +17,21 @@ You must also install socket.io:
 
        npm install socket.io
 	   
-		
+The ewdGateway module is compatible with EWD build 876 or later
+
+
 ##  EWD Gateway
 
 The ewdGateway module provides a multi-purpose gateway for the GT.M and Cach&#233; databases.  Functionality includes:
 
 - web server
-- web server gateway to GT.M and Cach&#233, pre-configured for running EWD applications;
-- websockets middle-tier connecting browser to GT.M or Cach&#233, pre-configured for the EWD Realtime functionality;
+- web server gateway to GT.M and Cach&#233;, pre-configured for running EWD applications;
+- websockets middle-tier connecting browser to GT.M or Cach&#233;, pre-configured for the EWD Realtime functionality;
 - access to globals from Javascript/Node.js
+
+The ewdGateway module can be used as a replacement for a standard web server such as IIS or Apache, and no other
+ gateway technology is required.  The ewdGateway module automatically makes child_process connections to your GT.M 
+or Cach&#233; database, the number of connections being determined by the poolSize that you specify.
 
 ##  Using ewdGateway
 
@@ -56,15 +62,15 @@ If you are using GT.M, compile your applications as normal, eg:
 
 The parameters that you can specify for the ewdGateway start function are as follows:
 
-- database  = the database type to which the gateway will connect ('gtm' | 'cache')
-- httpPort  = the port on which the webserver will listen
-- poolSize  = the number of child process connections to the database to be established.
-- namespace = (Cach&#233; only) the Cach&#233; namespace to which ewdGateway should connect
+- database  = the database type to which the gateway will connect ('gtm' | 'cache') (default = 'gtm')
+- httpPort  = the port on which the webserver will listen (default 8081)
+- poolSize  = the number of child process connections to the database to be established (default 5)
+- namespace = (Cach&#233; only) the Cach&#233; namespace to which ewdGateway should connect (default 'USER')
 - startWebserver = true | false.  Use false if you want to use ewdGateway for Node.js-based applications that 
-  use/access globals
+  use/access globals (default = true)
 - ewdPath = the URL path that denotes EWD applications (default = '/ewd/')
 - webServerRootPath = the physical path to use as the webserver root path (default = '/var/www')
-- trace   = true | false.  If true, a detailed log is written to the Node.js console
+- trace   = true | false.  If true, a detailed log is written to the Node.js console (default = true)
 
 
 
