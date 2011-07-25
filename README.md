@@ -86,9 +86,50 @@ eg, if you use ewdGateway's default ewdPath setting:
 
 You can only specify EWD pages that are defined as first pages.
 
+##  Using EWD's Realtime Web Functionality
+
+EWD's Realtime Web functionality makes use of the socket.io module.  socket.io uses the new HTML5 Web-Sockets 
+capability in the very latest browsers, but in older browsers it provides an emulation using a variety of 
+techniques, depending on the capabilities of the browser.  EWD's Realtime Web functionality can therefore 
+be used in most browsers (including IE6 and IE7), but a proper web-sockets capable browser is recommended for 
+maximum performance.
+
+EWD's Realtime Web functionality allows you to break free of the limitations of the HTTP protocol.  For example, 
+you can get your GT.M or Cach&#233; server to send messages at any time to any or all connected browsers.
+
+To activate, add websockets="true" to the <ewd:config> tag in your EWD Application's first page, eg:
+
+      <ewd:config isFirstPage="true" websockets="true" cachePage="false">
+
+You can then:
+
+- send messages from a browser to Node.js
+- send messages from a browser to GT.M or Cach&#233; (via Node.js)
+- return response messages from GT.M or Cach&#233; back to the browser (via Node.js)
+- send unsolicited messages from GT.M or Cach&#233; to any or all browsers (via Node.js)
+- return JSON to the browser via web-sockets messages
+- request EWD fragments via web-sockets (ie instead of the usual Ajax techniques)
+
+Messages are protected by EWD's built-in tokens, and can therefore be used to trigger methods in GT.M or Cach&#233;
+ against the user's EWD Session.
+
+##  EWD's Realtime Web: Messages
+
+Messages have two properties:
+
+- type
+- message (ie its content)
+
+There are several built-in types, but the idea is that you can define your own message types and the methods that 
+handle them, either on the browser, in Node.js or in GT.M/Cach&#233;
+
+EWD therefore provides the secure, automated framework for bi-directional socket-based messaging, and you define 
+the messages and their handlers.
+
+
 ## License
 
-Copyright (c) 2010 M/Gateway Developments Ltd,
+Copyright (c) 2011 M/Gateway Developments Ltd,
 Reigate, Surrey UK.
 All rights reserved.
 
