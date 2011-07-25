@@ -27,6 +27,28 @@ The ewdGateway module provides a multi-purpose gateway for the GT.M and Cach&#23
 - websockets middle-tier connecting browser to GT.M or Cach&#233;
 - access to globals from Javascript
 
+##  Using ewdGateway
+
+Node.js should be installed on the same physical server as a GT.M or Cach&#233; database.
+
+The following is a simple example of how to use the ewdGateway module:
+
+      var ewd = require('ewdGateway');
+      var params = {database:'gtm', httpPort: 8080, poolSize: 5, startWebserver: true};
+      ewd.start(params, function(gateway) {
+        console.log("version = " + gateway.version());
+      });
+
+This will start the webserver on port 8080, create a pool of 5 connections to GT.M.  Change the value of 
+params.database to 'cache' to connect to a Cach&#233; database instead.  You can now run EWD applications.
+
+Note: to use the ewdGateway module with EWD applications on Cach&#233; systems, you must compile the EWD 
+applications using the special 'ewd' technology paramater, eg:
+
+       do compileAll^%zewdAPI("myApp",,"ewd")
+
+
+
 
 ## License
 
