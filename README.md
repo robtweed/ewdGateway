@@ -88,7 +88,7 @@ You can only specify EWD pages that are defined as first pages.
 
 ##  Using EWD's Realtime Web Functionality
 
-EWD's Realtime Web functionality makes use of the socket.io module.  socket.io uses the new HTML5 Web-Sockets 
+EWD's optional Realtime Web functionality makes use of the Node.js socket.io module.  socket.io uses the new HTML5 Web-Sockets 
 capability in the very latest browsers, but in older browsers it provides an emulation using a variety of 
 techniques, depending on the capabilities of the browser.  EWD's Realtime Web functionality can therefore 
 be used in most browsers (including IE6 and IE7), but a proper web-sockets capable browser is recommended for 
@@ -101,14 +101,15 @@ To activate, add websockets="true" to the <ewd:config> tag in your EWD Applicati
 
       <ewd:config isFirstPage="true" websockets="true" cachePage="false">
 
-You can then:
+You can then use the socket connection that will be established between the user's browser and the Node.js 
+process to:
 
 - send messages from a browser to Node.js
 - send messages from a browser to GT.M or Cach&#233; (via Node.js)
 - return response messages from GT.M or Cach&#233; back to the browser (via Node.js)
 - send unsolicited messages from GT.M or Cach&#233; to any or all browsers (via Node.js)
-- return JSON to the browser via web-sockets messages
-- request EWD fragments via web-sockets (ie instead of the usual Ajax techniques)
+- return JSON to the browser
+- request EWD fragments (ie instead of the usual XHR-based Ajax techniques)
 
 Messages are protected by EWD's built-in tokens, and can therefore be used to trigger methods in GT.M or Cach&#233;
  against the user's EWD Session.
@@ -124,7 +125,44 @@ There are several built-in types, but the idea is that you can define your own m
 handle them, either on the browser, in Node.js or in GT.M/Cach&#233;
 
 EWD therefore provides the secure, automated framework for bi-directional socket-based messaging, and you define 
-the messages and their handlers.
+the messages and their handlers, giving you complete flexibility to use this powerful technology with a minimum
+ of effort.
+
+## Sending a message from the browser
+
+Use the Javascript method: EWD.sockets.sendMessage, eg:
+
+    EWD.sockets.sendMessage({type: "testing", message:  "This is my message for you to use"});
+
+In the example above, we've specified that this message will be of a type we've called 'testing'.  You can 
+specify as many different message types as you like.
+
+It's your responsibility to define a handler for each message type.  The handler can run in either the Node.js 
+process, or in the GT.M/Cach&#233; database.
+
+## Specifying a Node.js Handler for a Specified Message Type
+
+Add the method inside the ewdGateway module's start call-back function by extending the gateway.messageHandler object, eg:
+
+      var ewd = require('ewdGateway');
+      var params = {database:'gtm', httpPort: 8080, poolSize: 5, startWebserver: true};
+      ewd.start(params, function(gateway) {
+
+        gateway.messageHandler.testing = function(request) {
+          console.log("Processing the testing message " + request.message + "; User's EWD token:" + request.token);
+        });
+
+      });
+
+The custom-defined gatway.messageHandler.testing handler will be invoked whenever any message with a type="testing" 
+is received by the Node.js process.
+
+Note that an EWD token for the user's EWD Session is automatically added to the request object for the message.
+This can be used to determine the user's EWD Session Id as follows:
+
+       ewd.getSessid(request.token, function(error, results) {
+         console.log("The sessid for this user is: " + results.sessid});
+       });
 
 
 ## License
