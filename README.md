@@ -33,6 +33,8 @@ The ewdGateway module can be used as a replacement for a standard web server suc
  gateway technology is required.  The ewdGateway module automatically makes child_process connections to your GT.M 
 or Cach&#233; database, the number of connections being determined by the poolSize that you specify.
 
+For further details about the EWD web application framework for GT.M and Cach&#233;, see [http://www.mgateway.com/ewd.html](http://www.mgateway.com/ewd.html)
+
 ##  Using ewdGateway
 
 Node.js should be installed on the same physical server as a GT.M or Cach&#233; database.
@@ -72,7 +74,17 @@ The parameters that you can specify for the ewdGateway start function are as fol
 - webServerRootPath = the physical path to use as the webserver root path (default = '/var/www')
 - trace   = true | false.  If true, a detailed log is written to the Node.js console (default = true)
 
+##  Running EWD Applications
 
+You start EWD applications using a URL as follows:
+
+     http://[ip/domain]:[port][ewdPath][appName]/[pageName].ewd
+
+eg, if you use ewdGateway's default ewdPath setting:
+
+     http://192.168.1.100:8081/ewd/myApp/index.ewd
+
+You can only specify EWD pages that are defined as first pages.
 
 ## License
 
