@@ -17,21 +17,21 @@ You must also install socket.io:
 
        npm install socket.io
 	   
-The ewdGateway module is compatible with EWD build 876 or later
+The *ewdGateway* module is compatible with EWD build 876 or later
 
 
 ##  EWD Gateway
 
-The ewdGateway module provides a multi-purpose gateway for the GT.M and Cach&#233; databases.  Functionality includes:
+The *ewdGateway* module provides a multi-purpose gateway for the GT.M and Cach&#233; databases.  Functionality includes:
 
 - web server
 - web server gateway to GT.M and Cach&#233;, pre-configured for running EWD applications;
 - websockets middle-tier connecting browser to GT.M or Cach&#233;, pre-configured for the EWD Realtime functionality;
 - access to globals from Javascript/Node.js
 
-The ewdGateway module can be used as a replacement for a standard web server such as IIS or Apache, and no other
- gateway technology is required.  The ewdGateway module automatically makes child_process connections to your GT.M 
-or Cach&#233; database, the number of connections being determined by the poolSize that you specify.
+The *ewdGateway* module can be used as a replacement for a standard web server such as IIS or Apache, and no other
+ gateway technology is required.  The *ewdGateway* module automatically makes *child_process* connections to your GT.M 
+or Cach&#233; database, the number of connections being determined by the *poolSize* that you specify.
 
 For further details about the EWD web application framework for GT.M and Cach&#233;, see [http://www.mgateway.com/ewd.html](http://www.mgateway.com/ewd.html)
 
@@ -39,7 +39,7 @@ For further details about the EWD web application framework for GT.M and Cach&#2
 
 Node.js should be installed on the same physical server as a GT.M or Cach&#233; database.
 
-The following is a simple example of how to use the ewdGateway module:
+The following is a simple example of how to use the *ewdGateway* module:
 
       var ewd = require('ewdGateway');
       var params = {database:'gtm', httpPort: 8080, poolSize: 5, startWebserver: true};
@@ -48,10 +48,10 @@ The following is a simple example of how to use the ewdGateway module:
       });
 
 This will start the webserver on port 8080, create a pool of 5 connections to GT.M.  Change the value of 
-params.database to 'cache' to connect to a Cach&#233; database instead.  You can now run EWD applications.
+*params.database* to 'cache' to connect to a Cach&#233; database instead.  You can now run EWD applications.
 
-Note: to use the ewdGateway module with EWD applications on Cach&#233; systems, you must compile the EWD 
-applications using the special 'ewd' technology parameter, eg:
+Note: to use the *ewdGateway* module with EWD applications on Cach&#233; systems, you must compile the EWD 
+applications using the special *'ewd'* technology parameter, eg:
 
        do compileAll^%zewdAPI("myApp",,"ewd")
 
@@ -62,17 +62,17 @@ If you are using GT.M, compile your applications as normal, eg:
 
 ##  ewdGateway Start Parameters
 
-The parameters that you can specify for the ewdGateway start function are as follows:
+The parameters that you can specify for the *ewdGateway* *start* function are as follows:
 
-- database  = the database type to which the gateway will connect ('gtm' | 'cache') (default = 'gtm')
-- httpPort  = the port on which the webserver will listen (default 8081)
-- poolSize  = the number of child process connections to the database to be established (default 5)
-- namespace = (Cach&#233; only) the Cach&#233; namespace to which ewdGateway should connect (default 'USER')
-- startWebserver = true | false.  Use false if you want to use ewdGateway for Node.js-based applications that 
-  use/access globals (default = true)
-- ewdPath = the URL path that denotes EWD applications (default = '/ewd/')
-- webServerRootPath = the physical path to use as the webserver root path (default = '/var/www')
-- trace   = true | false.  If true, a detailed log is written to the Node.js console (default = true)
+- *database*  = the database type to which the gateway will connect (*'gtm'* | *'cache'*) (default = *'gtm'*)
+- *httpPort*  = the port on which the webserver will listen (default *8081*)
+- *poolSize*  = the number of child process connections to the database to be established (default *5*)
+- *namespace* = (Cach&#233; only) the Cach&#233; namespace to which *ewdGateway* should connect (default *'USER'*)
+- *startWebserver* = *true* | *false*.  Use false if you want to use *ewdGateway* for Node.js-based applications that 
+  use/access globals (default = *true*)
+- *ewdPath* = the URL path that denotes EWD applications (default = *'/ewd/'*)
+- *webServerRootPath* = the physical path to use as the webserver root path (default = *'/var/www'*)
+- *trace*   = *true* | *false*.  If *true*, a detailed log is written to the Node.js console (default = *true*)
 
 ##  Running EWD Applications
 
@@ -80,15 +80,15 @@ You start EWD applications using a URL as follows:
 
      http://[ip/domain]:[port][ewdPath][appName]/[pageName].ewd
 
-eg, if you use ewdGateway's default ewdPath setting:
+eg, if you use *ewdGateway's* default ewdPath setting:
 
      http://192.168.1.100:8081/ewd/myApp/index.ewd
 
-You can only specify EWD pages that are defined as first pages.
+You can only specify EWD pages that are defined as *first* pages.
 
 ##  Using EWD's Realtime Web Functionality
 
-EWD's optional Realtime Web functionality makes use of the Node.js socket.io module.  socket.io uses the new HTML5 Web-Sockets 
+EWD's optional Realtime Web functionality makes use of the Node.js *socket.io* module.  *socket.io* uses the new HTML5 Web-Sockets 
 capability in the very latest browsers, but in older browsers it provides an emulation using a variety of 
 techniques, depending on the capabilities of the browser.  EWD's Realtime Web functionality can therefore 
 be used in most browsers (including IE6 and IE7), but a proper web-sockets capable browser is recommended for 
@@ -97,7 +97,7 @@ maximum performance.
 EWD's Realtime Web functionality allows you to break free of the limitations of the HTTP protocol.  For example, 
 you can get your GT.M or Cach&#233; server to send messages at any time to any or all connected browsers.
 
-To activate, add websockets="true" to the <ewd:config> tag in your EWD Application's first page, eg:
+To activate, add *websockets="true"* to the *&lt;ewd:config&gt;* tag in your EWD Application's *first* page, eg:
 
       <ewd:config isFirstPage="true" websockets="true" cachePage="false">
 
@@ -111,6 +111,10 @@ process to:
 - return JSON to the browser
 - request EWD fragments (ie instead of the usual XHR-based Ajax techniques)
 
+The *ewdGateway* module uses the pool of child processes to your GT.M or Cach&#233; database for handling 
+socket messages as well as HTTP requests.  So using socket-based messaging communication does not require 
+any additional connections to GT.M or Cach&#233;.
+
 Messages are protected by EWD's built-in tokens, and can therefore be used to trigger methods in GT.M or Cach&#233;
  against the user's EWD Session.
 
@@ -119,7 +123,7 @@ Messages are protected by EWD's built-in tokens, and can therefore be used to tr
 Messages have two properties:
 
 - type
-- message (ie its content)
+- message (ie its content which is a string value)
 
 There are several built-in types, but the idea is that you can define your own message types and the methods that 
 handle them, either on the browser, in Node.js or in GT.M/Cach&#233;
@@ -130,11 +134,11 @@ the messages and their handlers, giving you complete flexibility to use this pow
 
 ## Sending a message from the browser
 
-Use the Javascript method: EWD.sockets.sendMessage, eg:
+Use the Javascript method: *EWD.sockets.sendMessage*, eg:
 
-    EWD.sockets.sendMessage({type: "testing", message:  "This is my message for you to use"});
+     EWD.sockets.sendMessage({type: "testing", message:  "This is my message for you to use"});
 
-In the example above, we've specified that this message will be of a type we've called 'testing'.  You can 
+In the example above, we've specified that this message will be of a type we've called *'testing'*.  You can 
 specify as many different message types as you like.
 
 It's your responsibility to define a handler for each message type.  The handler can run in either the Node.js 
@@ -142,10 +146,10 @@ process, or in the GT.M/Cach&#233; database.
 
 ## Specifying a Node.js Handler for a Specified Message Type
 
-If you've sent a message from the browser, you can opt to handle it within the ewdGateway Node.js process.
+If you've sent a message from the browser, you can opt to handle it within the *ewdGateway* Node.js process.
 
-Simply add the method that will handle the message type inside the ewdGateway module's start call-back function 
-by extending the gateway.messageHandler object, eg:
+Simply add the method that will handle the message type inside the *ewdGateway* module's *start* call-back function 
+by extending the *gateway.messageHandler* object, eg:
 
       var ewd = require('ewdGateway');
       var params = {database:'gtm', httpPort: 8080, poolSize: 5, startWebserver: true};
@@ -157,12 +161,12 @@ by extending the gateway.messageHandler object, eg:
 
       });
 
-The custom-defined gatway.messageHandler.testing handler will be invoked whenever any message with a type="testing" 
-is received by the Node.js process.
+Your custom-defined *gatway.messageHandler.testing* handler will now be invoked whenever any message with a 
+type=*"testing"* is received by the Node.js process.
 
-In other words, for any specific message type, create a method: gateway.messageHandler.{messageTypeName}
+In other words, to handle a specific message type, create a method: *gateway.messageHandler.{messageTypeName}*
 
-Note that an EWD token for the user's EWD Session is automatically added to the request object for the message.
+Note that an EWD token for the user's EWD Session is automatically added to the *request* object for the message.
 This can be used to determine the user's EWD Session Id within your handler method as follows:
 
         gateway.messageHandler.testing = function(request) {
@@ -174,13 +178,40 @@ This can be used to determine the user's EWD Session Id within your handler meth
 ### Returning a Response from Node.js to the Browser
 
 If you are handling a message in the Node.js tier, you may want to return a response to the browser. Simply use 
-the request object's sendResponse function, eg:
+the *request* object's *sendResponse* function, eg:
 
-      gateway.messageHandler.testit = function(request) {
+      gateway.messageHandler.testing = function(request) {
         ewd.getSessid(request.token, function(error, results) {
-          request.sendResponse({type: 'testitResponse', message: "The sessid for this user is: " + results.sessid});
+          request.sendResponse({type: 'testingResponse', message: "The sessid for this user is: " + results.sessid});
         });
       };
+
+### Handling a Received Message in the Browser
+
+So the browser has received a message of a certain type via *socket.io*: you need to specify a handler to do 
+something with it.  You do this by defining a function called *EWD.sockets.serverMessageHandler*.  For example:
+
+      EWD.sockets.serverMessageHandler = function(messageObj) {
+        document.getElementById("message").innerHTML = "Sent from Cache: " +  messageObj.message;
+      };
+
+This very simple handler will treat all received messages identically, replacing the innerHTML of a tag whose
+id is *'message'* with the contents of the received message.
+
+To make it more specific, conditionalise the function's behaviour by identifying the message's type, eg to 
+handle *info* messages in a specific way:
+
+      EWD.sockets.serverMessageHandler = function(messageObj) {
+        if (messageObj.type === 'info') {
+          console.log("info received: " + JSON.stringify(messageObj.message));
+          return;
+        }
+        document.getElementById("message").innerHTML = "Sent from Cache: " +  messageObj.message;
+      };
+
+Note: *all* received messages that have a *type* property defined will be handled by your method.  Whether and 
+how you handle them is entirely up to you.
+
 
 ## License
 
