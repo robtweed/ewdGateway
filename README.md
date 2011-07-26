@@ -260,6 +260,64 @@ The response message will be automatically relayed back to the browser that sent
 
 Of course you should define a corresponding handler within the browser page for this response message type.
 
+## Sending messages from GT.M or Cach&#233; to one or more browsers
+
+One of the exciting features of EWD's Real-time functionality is that you can generate messages within 
+GT.M/Cach&#233; and send them to a browser without the browser having first requested the message.  In other words 
+you can break free of the usual limitations of browsers that are imposed by the HTTP protocol.
+
+Of course, you need to be confident that this can be done in a safe and secure manner.  EWD and the *ewdGateway*
+module make this both possible *and* incredibly simple.
+
+In fact you can test the functionality immediately by just running a test procedure that is built into EWD's *^%zewdNode* 
+ routine.  With the *ewdGateway* module running, now, from within a GT.M/Cach&#233; terminal session just 
+ run the following:
+
+
+      do serverMessageTest^%zewdNode(5)
+
+This will send a message every 5 seconds to all currently active EWD sessions.  If the page in the browser for 
+each of those sessions includes a handler method for the message (type = *'alert'*), you'll see the message appear 
+automatically in every browser.
+
+If you look at the code in serverMessageTest(), you'll see how you can send messages to browsers:
+
+
+      serverMessageTest(delay)
+       ;
+       n message,ok,sessid,trigger
+       ;
+       s trigger=$zv'["GT.M"
+       s delay=$g(delay) i delay="" s delay=10
+       f  d
+       . h $g(delay)
+       . s sessid=""
+       . f  s sessid=$o(^%zewdSession("session",sessid)) q:sessid=""  d
+       . . w "sessid="_sessid,!
+       . . s message="Server message test for sessid "_sessid_" from "_$j_" at "_$$inetDate^%zewdAPI($h)
+       . . s ok=$$createServerMessage^%zewdNode("alert",message,sessid,trigger)
+       . i 'trigger d triggerServerMessage^%zewdNode
+       . w "======",!
+       QUIT
+
+The key command is:
+
+       s ok=$$createServerMessage^%zewdNode(messageType,message,sessid,trigger)
+
+The input parameters are as follows:
+
+- *messageType*:  the type of message to send to the browser
+- *message*: the message contents
+- *sessid*: the EWD Session Id for the browser user who you want to receive the message
+- *trigger*: (GT.M only) If set to 1, you will immediately trigger the sending of the message.  If you're sending 
+a batch of messages, it is better to trigger the sending of the entire batch in one go (as happens in the
+*serverMessageTest()* example above.
+
+Note: on Cach&#233; systems, triggering is done automatically and the trigger parameter can be left out, ie:
+
+       s ok=$$createServerMessage^%zewdNode(messageType,message,sessid)
+
+
 
 ## License
 
