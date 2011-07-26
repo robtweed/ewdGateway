@@ -317,6 +317,69 @@ Note: on Cach&#233; systems, triggering is done automatically and the trigger pa
 
        s ok=$$createServerMessage^%zewdNode(messageType,message,sessid)
 
+## Using Messages to deliver JSON to the browser
+
+You can use the special reserved type *'json'* to deliver JSON objects to browsers.  The JSON messages can 
+be generated either in the Node.js or database tiers.
+
+The following example generates a JSON response message in a GT.M/Cach&#233; procedure:
+
+      getJSON(message,sessid)
+       n array,json
+       s array("a")=12345
+       s array("b")="hello!"
+       s array("c",1)="true"
+       s array("c","x")=message
+       s json=$$arrayToJSON^%zewdJSON("array")
+       d sendSocketMessage^%zewdNode("json",json)
+       QUIT
+
+This procedure would be registered as a handler, eg:
+
+       set ^zewd("websocketHandler","getjson")="getJSON^myHandlers"
+
+
+Request the JSON message from the browser, eg:
+
+        function jsontest() {
+          EWD.sockets.sendMessage({type: "getjson", message: "abcdef"});
+        }
+
+And finally provide a handler in the browser page to deal with JSON response messages, eg:
+
+      EWD.sockets.serverMessageHandler = function(messageObj) {
+        if (messageObj.type === 'json') {
+          console.log("json received: " + JSON.stringify(messageObj.json));
+          console.log("a = " + messageObj.json.a);
+          console.log("You sent " + messageObj.json.c.x);
+          return;
+        }
+        document.getElementById("message").innerHTML = "Sent from Cache: " +  messageObj.message;
+      };
+
+
+## Using Socket Messages to request EWD fragments
+
+EWD's Realtime functionality even allows you to use Socket Messages to make requests for EWD fragments, ie 
+instead of using the standard Ajax XHR-based techniques.  There is no difference in functionality: you can
+still invoke the fragment's pre-page script as normal, and any Javascript in the fragment's contents will be 
+executed as usual.
+
+To request/fetch an EWD fragment in this way, just do the following in the browser page:
+
+        function fragmenttest() {
+          EWD.sockets.getPage({page: "testFrag", targetId: 'message'});
+        }
+
+You can add add extra name/value pairs to the request for the page in a way similar to the EWD Ajax technique, eg:
+
+        function fragmenttest2() {
+          var nvp = 'a=12345&b=hello world';
+          EWD.sockets.getPage({page: "testFrag2", targetId: 'message', nvp: nvp});
+        }
+
+It is not yet clear whether there are any performance benefits in using this socket-based approach to
+fetching EWD fragments.  Experience from users should inform this in due course.
 
 
 ## License
