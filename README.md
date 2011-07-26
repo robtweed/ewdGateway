@@ -237,12 +237,23 @@ In GT.M (or Cach&#233;), create a handler procedure, eg in a routine file named 
 
 Now define the handler dispatch link:
 
-      set ^zewd("websocketHandler","dbmsMessage")="dbmdMessage^myHandlers"
+      set ^zewd("websocketHandler","dbmsMessage")="dbmsMessage^myHandlers"
 
 That's all there is to it!  Every message of type *dbmsMessage* will now be forwarded to GT.M/Cach&#233; and
  handled by your procedure.  Note the way that EWD automatically figures out the sessid associated with the 
  message - it does this via the unique EWD session token that is automatically sent to the ewdGateway with 
  every message sent from the browser.
+
+Note: users of Cach&#233; can make use of class methods.  Simply specify the class method in the format:
+
+      ##class(packageName).method
+
+For example:
+
+      set ^zewd("websocketHandler","dbmsMessage")="##class(my.handlers).dbmsMessage"
+
+The class method must be specified with two string parameters: *message* and *sessid*.
+
 
 Messages sent from browsers must contain a valid EWD Session token.  If the token does not match any EWD 
 tokens for currently active EWD Sessions, a response message of type 'error' will be returned by EWD/ *ewdGateway*.
@@ -371,7 +382,7 @@ To request/fetch an EWD fragment in this way, just do the following in the brows
           EWD.sockets.getPage({page: "testFrag", targetId: 'message'});
         }
 
-You can add add extra name/value pairs to the request for the page in a way similar to the EWD Ajax technique, eg:
+You can add extra name/value pairs to the request for the page in a way similar to the EWD Ajax technique, eg:
 
         function fragmenttest2() {
           var nvp = 'a=12345&b=hello world';
@@ -380,6 +391,60 @@ You can add add extra name/value pairs to the request for the page in a way simi
 
 It is not yet clear whether there are any performance benefits in using this socket-based approach to
 fetching EWD fragments.  Experience from users should inform this in due course.
+
+## Accessing Globals from Node.js
+
+The *ewdGateway* additionally allows your Node.js process to access and manipulate Globals and even execute 
+functions written in M or Cach&#233; ObjectScript.  You can turn off the webserver capability and just use 
+ewdGateway as an interface between Node.js and the global database provided by GT.M and Cach&#233;.  The *ewdGateway* 
+module uses the same pool of *child_process* connections to GT.M or Cach&#233; for this purpose.
+
+The following APIs are currently available:
+
+- *set*: set a global node
+- *get*: get the value stored in a global node (if it exists)
+- *kill*: delete a global node
+- *getJSON*: return a sub-tree of global nodes as a JSON object
+- *increment*: increment a global node
+- *getSubscripts*: return (as an array) the values of a specified subscript within a global
+- *mFunction*: execute a specified M/Cach&#233; ObjectScript function and return its value
+
+All the APIs have the same calling interface:
+
+      ewd.globals.[APIName](parameterObject, function(error, results) {
+        // do something here
+      });
+
+For example:
+
+       ewd.globals.increment({global: 'testing', subscripts: ['xx','y','z']}, function(error, results) {
+          console.log("error: " + error + "; incremented value = " + results.value);
+       });
+
+### API Details
+
+#### set
+
+  parameters:
+
+  - *global*: name of the global
+  - *subscripts*: array of subscript values (to identify the node to be set)
+  - *value*: the value to be set for the specified global node
+
+  error: true if an error occurred | false if the API ran successfully
+
+  results:
+
+  - *ok*: true
+
+  Example:
+
+      ewd.globals.set({global: 'rob', subscripts: ["a","b"], value: 'hello!'}, function(error, results) {
+        console.log("error: " + error + "; ok = " + results.ok);
+      });
+
+
+
 
 
 ## License
