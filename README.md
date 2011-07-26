@@ -123,7 +123,7 @@ Messages are protected by EWD's built-in tokens, and can therefore be used to tr
 Messages have two properties:
 
 - type
-- message (ie its content which is a string value)
+- message (ie its content)
 
 There are several built-in types, but the idea is that you can define your own message types and the methods that 
 handle them, either on the browser, in Node.js or in GT.M/Cach&#233;
@@ -203,7 +203,7 @@ handle *info* messages in a specific way:
 
       EWD.sockets.serverMessageHandler = function(messageObj) {
         if (messageObj.type === 'info') {
-          console.log("info received: " + JSON.stringify(messageObj.message));
+          console.log("info received: " + messageObj.message);
           return;
         }
         document.getElementById("message").innerHTML = "Sent from Cache: " +  messageObj.message;
@@ -211,6 +211,54 @@ handle *info* messages in a specific way:
 
 Note: *all* received messages that have a *type* property defined will be handled by your method.  Whether and 
 how you handle them is entirely up to you.
+
+## Specifying a GT.M or Cach&#233; handler for a Specified Message Type
+
+When you send a message of a particular type from the browser, you can opt to handle it in the GT.M or Cach&#233;
+database instead of within the Node.js tier.  To do this:
+
+- don't specify a handler in your Node.js layer
+- create a handler procedure in M code / Cach&#233; ObjectScript
+- set a handler dispatch link in the ^zewd Global
+
+For example, if the browser created a message with type *dbmsMessage*, eg:
+
+      function testInGTM() {
+        EWD.sockets.sendMessage({type: "dbmsMessage", message: "Handle this in GT.M"});
+      }
+
+In GT.M (or Cach&#233;), create a handler procedure, eg in a routine file named *^myHandlers*:
+
+      dbmsMessage(message,sessid)
+        new no
+        set no=$increment(^myMessages(sessid))
+        set ^myMessages(sessid,no)=message
+        QUIT
+
+Now define the handler dispatch link:
+
+      set ^zewd("websocketHandler","dbmsMessage")="dbmdMessage^myHandlers"
+
+That's all there is to it!  Every message of type *dbmsMessage* will now be forwarded to GT.M/Cach&#233; and
+ handled by your procedure.  Note the way that EWD automatically figures out the sessid associated with the 
+ message - it does this via the unique EWD session token that is automatically sent to the ewdGateway with 
+ every message sent from the browser.
+
+Messages sent from browsers must contain a valid EWD Session token.  If the token does not match any EWD 
+tokens for currently active EWD Sessions, a response message of type 'error' will be returned by EWD/ *ewdGateway*.
+
+### Returning a response message from GT.M or Cach&#233; back to the browser
+
+This is also very straightforward.  Simply use the *sendSocketMessage* procedure in EWD's *^%zewdNode* routine within 
+your handler procedure, eg:
+
+      dbmsMessage(message,sessid)
+        d sendSocketMessage^%zewdNode("dbmsMessageResponse","The message handled in GT.M was: "_message)
+        QUIT
+
+The response message will be automatically relayed back to the browser that sent the original message to GT.M/Cach&#233;
+
+Of course you should define a corresponding handler within the browser page for this response message type.
 
 
 ## License
