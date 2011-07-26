@@ -142,7 +142,10 @@ process, or in the GT.M/Cach&#233; database.
 
 ## Specifying a Node.js Handler for a Specified Message Type
 
-Add the method inside the ewdGateway module's start call-back function by extending the gateway.messageHandler object, eg:
+If you've sent a message from the browser, you can opt to handle it within the ewdGateway Node.js process.
+
+Simply add the method that will handle the message type inside the ewdGateway module's start call-back function 
+by extending the gateway.messageHandler object, eg:
 
       var ewd = require('ewdGateway');
       var params = {database:'gtm', httpPort: 8080, poolSize: 5, startWebserver: true};
@@ -157,13 +160,27 @@ Add the method inside the ewdGateway module's start call-back function by extend
 The custom-defined gatway.messageHandler.testing handler will be invoked whenever any message with a type="testing" 
 is received by the Node.js process.
 
+In other words, for any specific message type, create a method: gateway.messageHandler.{messageTypeName}
+
 Note that an EWD token for the user's EWD Session is automatically added to the request object for the message.
-This can be used to determine the user's EWD Session Id as follows:
+This can be used to determine the user's EWD Session Id within your handler method as follows:
 
-       ewd.getSessid(request.token, function(error, results) {
-         console.log("The sessid for this user is: " + results.sessid});
-       });
+        gateway.messageHandler.testing = function(request) {
+          ewd.getSessid(request.token, function(error, results) {
+            console.log("The sessid for this user is: " + results.sessid});
+          });
+        });
 
+### Returning a Response from Node.js to the Browser
+
+If you are handling a message in the Node.js tier, you may want to return a response to the browser. Simply use 
+the request object's sendResponse function, eg:
+
+      gateway.messageHandler.testit = function(request) {
+        ewd.getSessid(request.token, function(error, results) {
+          request.sendResponse({type: 'testitResponse', message: "The sessid for this user is: " + results.sessid});
+        });
+      };
 
 ## License
 
