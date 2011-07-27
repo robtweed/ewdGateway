@@ -398,7 +398,7 @@ fetching EWD fragments.  Experience from users should inform this in due course.
 ## Accessing globals from Node.js
 
 Globals are the unit of data storage in GT.M and Cach&#233; databases (see [http://www.mgateway.com/docs/universalNoSQL.pdf] 
-(http://www.mgateway.com/docs/universalNoSQL.pdf).
+(http://www.mgateway.com/docs/universalNoSQL.pdf) ).
 
 The *ewdGateway* additionally allows your Node.js process to access and manipulate globals and even execute 
 functions written in M or Cach&#233; ObjectScript.  You can turn off the webserver capability and just use 
@@ -461,10 +461,11 @@ For example:
   results:
 
   - *value*: value of global node (empty string if node does not exist or does not contain data)
-  - *exists*: 0  = node does not exist
-              1  = node exists and has data value
-              10 = node exists but does not have a data value (ie it just has child subscripts)
-              11 = node exists, has data *and* has child subscripts
+  - *exists*: 
+    - 0  = node does not exist;
+    - 1  = node exists and has data value;
+    - 10 = node exists but does not have a data value (ie it just has child subscripts);
+    - 11 = node exists, has data *and* has child subscripts
 
   Example:
 
@@ -556,7 +557,7 @@ For example:
 
   parameters:
 
-  - *functionName*: name of the M function
+  - *functionName*: name of the M function (or Cach&#233; ObjectScript class method)
   - *parameters*: array of parameter values to pass to the function)
 
   error: true if an error occurred | false if the API ran successfully
