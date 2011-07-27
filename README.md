@@ -22,7 +22,10 @@ The *ewdGateway* module is compatible with EWD build 876 or later
 
 ##  EWD Gateway
 
-The *ewdGateway* module provides a multi-purpose gateway for the GT.M and Cach&#233; databases.  Functionality includes:
+EWD is a proven web application/Ajax framework specifically designed for use with GT.M and Cach&#233; databases, 
+allowing extremely rapid development of secure, high-performance web applications.
+
+The *ewdGateway* module provides a multi-purpose web application gateway for EWD applications.  Functionality includes:
 
 - web server
 - web server gateway to GT.M and Cach&#233;, pre-configured for running EWD applications;
@@ -392,9 +395,12 @@ You can add extra name/value pairs to the request for the page in a way similar 
 It is not yet clear whether there are any performance benefits in using this socket-based approach to
 fetching EWD fragments.  Experience from users should inform this in due course.
 
-## Accessing Globals from Node.js
+## Accessing globals from Node.js
 
-The *ewdGateway* additionally allows your Node.js process to access and manipulate Globals and even execute 
+Globals are the unit of data storage in GT.M and Cach&#233; databases (see [http://www.mgateway.com/docs/universalNoSQL.pdf] 
+(http://www.mgateway.com/docs/universalNoSQL.pdf).
+
+The *ewdGateway* additionally allows your Node.js process to access and manipulate globals and even execute 
 functions written in M or Cach&#233; ObjectScript.  You can turn off the webserver capability and just use 
 ewdGateway as an interface between Node.js and the global database provided by GT.M and Cach&#233;.  The *ewdGateway* 
 module uses the same pool of *child_process* connections to GT.M or Cach&#233; for this purpose.
@@ -443,8 +449,131 @@ For example:
         console.log("error: " + error + "; ok = " + results.ok);
       });
 
+#### get
 
+  parameters:
 
+  - *global*: name of the global
+  - *subscripts*: array of subscript values (to identify the node to be accessed)
+
+  error: true if an error occurred | false if the API ran successfully
+
+  results:
+
+  - *value*: value of global node (empty string if node does not exist or does not contain data)
+  - *exists*: 0  = node does not exist
+              1  = node exists and has data value
+              10 = node exists but does not have a data value (ie it just has child subscripts)
+              11 = node exists, has data *and* has child subscripts
+
+  Example:
+
+      ewd.globals.get({global: 'rob', subscripts: ["a","b"]}, function(error, results) {
+        console.log("error: " + error + "; exists = " + results.exists + "; value = " + results.value);
+      });
+
+#### kill
+
+  parameters:
+
+  - *global*: name of the global
+  - *subscripts*: array of subscript values (to identify the node to be deleted)
+
+  error: true if an error occurred | false if the API ran successfully
+
+  results:
+
+  - *ok*: true
+
+  Example:
+
+      ewd.globals.kill({global: 'rob', subscripts: ["a","b"]}, function(error, results) {
+        console.log("error: " + error + "; ok = " + results.ok);
+      });
+
+#### getJSON
+
+  parameters:
+
+  - *global*: name of the global
+  - *subscripts*: array of subscript values (to identify the top of the sub-tree to retrieve)
+
+  error: true if an error occurred | false if the API ran successfully
+
+  results: the JSON object representing the global sub-tree
+
+  Example:
+
+      ewd.globals.getJSON({global: 'rob', subscripts: ["a","b"]}, function(error, results) {
+        console.log("error: " + error + "; json = " + JSON.stringify(results));
+      });
+
+#### increment
+
+  parameters:
+
+  - *global*: name of the global
+  - *subscripts*: array of subscript values (to identify the node whose value is to be incremented)
+
+  error: true if an error occurred | false if the API ran successfully
+
+  results:
+
+  - *value*: new incremented value of the specified node.  If the node previously didn't exist, value will be 1
+
+  Example:
+
+      ewd.globals.increment({global: 'rob', subscripts: ["a","b"]}, function(error, results) {
+        console.log("error: " + error + "; value = " + results.value);
+      });
+
+#### getSubscripts
+
+  parameters:
+
+  - *global*: name of the global
+  - *subscripts*: array of subscript values (to identify the subscripting level immediately below the one you 
+ want to search)
+  - *from*: (optional) the start value for the list of subscripts
+  - *to*: (optional) the last value for the list of subscripts
+  - *all*: if you want to retrieve all subscripts, specify *all:true*
+
+  error: true if an error occurred | false if the API ran successfully
+
+  results: array of subscript values
+
+  Examples:
+
+  ewd.globals.getSubscripts({global: 'rob', subscripts: ["a"], from:'hello', to:'world'}, function(error, results) {
+     console.log("error: " + error + "; array of subscripts: " + JSON.stringify(results));
+  });
+
+  ewd.globals.getSubscripts({global: 'rob', subscripts: ["a", "b"], all:true}, function(error, results) {
+     console.log("error: " + error + "; array of subscripts: " + JSON.stringify(results));
+  });
+
+#### mFunction
+
+  parameters:
+
+  - *functionName*: name of the M function
+  - *parameters*: array of parameter values to pass to the function)
+
+  error: true if an error occurred | false if the API ran successfully
+
+  results:
+
+  - *value*: value returned by the function
+
+  Examples:
+
+    ewd.globals.mFunction({functionName: 'testFunction^myMethods', parameters: [123, 'y']}, function(error, results) {
+      console.log("error: " + error + "; value returned by function: " + results.value);
+    });
+
+    ewd.globals.mFunction({functionName: '##class(my.methods).testFunction', parameters: [123, 'y']}, function(error, results) {
+      console.log("error: " + error + "; value returned by function: " + results.value);
+    });
 
 
 ## License
