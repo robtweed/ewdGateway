@@ -545,13 +545,13 @@ For example:
 
   Examples:
 
-  ewd.globals.getSubscripts({global: 'rob', subscripts: ["a"], from:'hello', to:'world'}, function(error, results) {
-     console.log("error: " + error + "; array of subscripts: " + JSON.stringify(results));
-  });
+      ewd.globals.getSubscripts({global: 'rob', subscripts: ["a"], from:'hello', to:'world'}, function(error, results) {
+          console.log("error: " + error + "; array of subscripts: " + JSON.stringify(results));
+      });
 
-  ewd.globals.getSubscripts({global: 'rob', subscripts: ["a", "b"], all:true}, function(error, results) {
-     console.log("error: " + error + "; array of subscripts: " + JSON.stringify(results));
-  });
+      ewd.globals.getSubscripts({global: 'rob', subscripts: ["a", "b"], all:true}, function(error, results) {
+         console.log("error: " + error + "; array of subscripts: " + JSON.stringify(results));
+      });
 
 #### mFunction
 
