@@ -9,6 +9,8 @@ Twitter: @rtweed
 
 Google Group for discussions, support, advice etc: [http://groups.google.co.uk/group/enterprise-web-developer-community](http://groups.google.co.uk/group/enterprise-web-developer-community)
 
+Thanks to Stephen Chadwick for enhancements and modifications
+
 ## Installing ewdGateway
 
        npm install ewdGateway

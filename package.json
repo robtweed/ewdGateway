@@ -1,6 +1,6 @@
 { "name" : "ewdGateway"
 , "description" : "Node.js-based EWD Gateway for Cache and GT.M"
-, "version" : "0.0.16"
+, "version" : "0.0.17"
 , "author" : "Rob Tweed <rtweed@mgateway.com>"
 , "repository" :
   { "type" : "git"
