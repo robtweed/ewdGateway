@@ -78,6 +78,26 @@ The parameters that you can specify for the *ewdGateway* *start* function are as
 - *ewdPath* = the URL path that denotes EWD applications (default = *'/ewd/'*)
 - *webServerRootPath* = the physical path to use as the webserver root path (default = *'/var/www'*)
 - *trace*   = *true* | *false*.  If *true*, a detailed log is written to the Node.js console (default = *true*)
+- useWebSockets = *true*|*false* (default = true)  If true, the socket.io library is loaded
+- maxMsgLength  = the buffer size (in bytes) into which as many queued requests will be packed as possible (if available) 
+  (default = 8192)
+- logTo   = *console*|*file*  The destination for trace information (default = *console*)
+- logFile = the filename/filepath of the log file if logTo = file (default = *ewdLog.txt*)
+- connectionCheckInterval = the interval (in secs) between reporting connection utilisation stats and checking the 
+  ^zewd("ewdGateway") configuration global (default = 30)
+
+For GT.M systems:
+
+- gtmShellCommand  = the command that will start GT.M child processes (default = *mumps*)
+
+If you are using ewdGateway.js on a Windows platform, and want to connect to a Windows-based Cach&#233; system, 
+ you should use telnet connections to Cach&#233; by using the following parameters:
+
+- *host*             = the IP address or domain name of the Cach&#233; server (default *127.0.0.1*)
+- *telnetPort*       = the port to use for telnet connections (default *23*)
+- *telnetTerminator* = the string used by ewdGateway to determine that a telnet connection has been established
+  (default = *USER>*)
+
 
 ##  Running EWD Applications
 
@@ -90,6 +110,22 @@ eg, if you use *ewdGateway's* default ewdPath setting:
      http://192.168.1.100:8081/ewd/myApp/index.ewd
 
 You can only specify EWD pages that are defined as *first* pages.
+
+##  Dynamically modifying parameters
+
+You can modify the startup parameters without having to restart the Node.js process by setting values 
+into the ^zewd("ewdGateway) global.  The following parameters can be altered:
+
+- ^zewd("ewdGateway","poolSize") = the new connection pool size.  ewdGateway will start or close the appropriate
+number of connections to GT.M or Cach&#233; to match the new pool size
+- ^zewd("ewdGateway","trace") = "true"|"false" to start/stop the trace log
+- ^zewd("ewdGateway","logTo") = "console"|"file" to switch logging between the console and a log file
+- ^zewd("ewdGateway","logFile") = filename, to change the log file path
+- ^zewd("ewdGateway","clearLog") = "true" to clear down the log file
+- ^zewd("ewdGateway","maxMsgLength") = new buffer size in bytes
+
+The settings are checked each time ewdGateway checks its connection utilisation statistics (default = every 30 seconds)
+
 
 ##  Using EWD's Realtime Web Functionality
 
