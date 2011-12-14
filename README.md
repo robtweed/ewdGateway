@@ -19,7 +19,7 @@ You must also install socket.io:
 
        npm install socket.io
 	   
-The *ewdGateway* module is compatible with EWD build 893 or later
+The *ewdGateway* module is compatible with EWD build 894 or later
 
 
 ##  EWD Gateway
