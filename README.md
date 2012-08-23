@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/robtweed/ewdGateway.png)](http://travis-ci.org/robtweed/ewdGateway)
 # ewdGateway
  
 Node.js-based EWD Gateway for Cache and GT.M
